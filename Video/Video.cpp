@@ -41,7 +41,7 @@ namespace video
 			return 0;
 		}
 		
-		const char * pWinNameStr = "Video Divide";
+		const char * pWinNameStr = "Video Divider";
 		cvNamedWindow(pWinNameStr);
 		char nameBufArray[200];
 		int count = 0;
@@ -52,10 +52,11 @@ namespace video
 			cvShowImage(pWinNameStr,m_pCurImg); // show image
 			cvSaveImage(nameBufArray,m_pCurImg); // save image
 			++count;
-			cvWaitKey(20);
+			cvWaitKey(10);
 		}
 
 		cvDestroyWindow(pWinNameStr);
+		return count+1;
 	}
 
 	VideoGen::VideoGen(const char * pImgDirPath, const char * pSaveVideoName,
@@ -88,7 +89,7 @@ namespace video
 
 			// load the first frame
 			char imgNameStr[200];
-			sprintf_s(imgNameStr,"%s\\%s%d.%s",
+			sprintf_s(imgNameStr,"%s%s%d%s",
 				pImgDirPath,pImgPrefix,0,pImgExt);
 			m_pCurImg = cvLoadImage(imgNameStr);
 		}
@@ -140,20 +141,21 @@ namespace video
 			}
 		}else
 		{
-			cvReleaseImage(&m_pCurImg); // release the frame
+			cvReleaseImage(&m_pCurImg); // release the first frame
 			char imgNameBuf[200];
 			const char * pWinName = "Video Generator";
 			cvNamedWindow(pWinName);
-			for (int i = 1; i < numFrames; ++i)
+			for (int i = 1; i < (int)numFrames; ++i)
 			{
-				sprintf_s(imgNameBuf,"%s\\%s%d.%s",
+				sprintf_s(imgNameBuf,"%s%s%d%s",
 					m_imgDirPathStr,m_imgPrefixStr,i,m_imgExtStr);
 				m_pCurImg = cvLoadImage(imgNameBuf);
 				cvWriteFrame(m_pVideoWriter,m_pCurImg);
 				cvShowImage(pWinName,m_pCurImg);
-				cvWaitKey(30);
+				cvWaitKey(10);
 				cvReleaseImage(&m_pCurImg);
 			}
+			cvDestroyWindow(pWinName);
 		}
 
 		return true;
