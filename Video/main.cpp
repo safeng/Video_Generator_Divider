@@ -113,9 +113,9 @@ static void PrintMsg(void)
 	cout << "Video [options] src dst num" << endl;
 	cout << "-h\tPrint help message\n";
 	cout << "-d\tDivide video into images. src=source video path, and 0\
-			means using camera. dst=save path\n";
+			means using camera (press ESC to exit recording). dst=save path\n";
 	cout << "-r\tRecord video from images or camera. src=path of the first\
-		   image(start with image0.jpg), and 0 means using camera. dst=\
-		   save path\n" << std::flush;
+			image(start with image0.jpg), and 0 means using camera (press \
+			ESC to exit recording). dst=save path\n" << std::flush;
 
 }

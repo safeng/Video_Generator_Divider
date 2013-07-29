@@ -15,6 +15,7 @@ namespace video
 	private:
 		CvCapture * m_pCapture; // video capture from file or camera
 		const IplImage * m_pCurImg; // current image pointer
+		bool m_bUseCam; // use camera 
 
 	public:
 		explicit VideoDiv(const char * pfileNameStr);

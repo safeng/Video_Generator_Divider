@@ -3,11 +3,12 @@
 namespace video
 {
 	VideoDiv::VideoDiv(const char * pfileNameStr)
-		: m_pCapture(NULL), m_pCurImg(NULL)
+		: m_pCapture(NULL), m_pCurImg(NULL), m_bUseCam(false)
 	{
 		if (NULL == pfileNameStr) // read from camera
 		{
 			m_pCapture = cvCreateCameraCapture(0);
+			m_bUseCam = true;
 		}else
 		{
 			m_pCapture = cvCreateFileCapture(pfileNameStr);
@@ -52,7 +53,11 @@ namespace video
 			cvShowImage(pWinNameStr,m_pCurImg); // show image
 			cvSaveImage(nameBufArray,m_pCurImg); // save image
 			++count;
-			cvWaitKey(10);
+			if (m_bUseCam && 27 == cvWaitKey(1))
+				// if camera is used press ESC to exit recording
+			{
+				break;
+			}
 		}
 
 		cvDestroyWindow(pWinNameStr);
@@ -132,19 +137,24 @@ namespace video
 
 		// write the first frame
 		cvWriteFrame(m_pVideoWriter,m_pCurImg);
-	
+		const char * pWinName = "Video Generator";
+		cvNamedWindow(pWinName);
 		if (m_bCam) // use camera
 		{
 			while(m_pCurImg = cvQueryFrame(m_pCaptureCam))
 			{
 				cvWriteFrame(m_pVideoWriter,m_pCurImg);
+				cvShowImage(pWinName,m_pCurImg);
+				if (27 == cvWaitKey(1)) // press ESC to break
+				{
+					break;
+				}
 			}
 		}else
 		{
 			cvReleaseImage(&m_pCurImg); // release the first frame
 			char imgNameBuf[200];
-			const char * pWinName = "Video Generator";
-			cvNamedWindow(pWinName);
+			
 			for (int i = 1; i < (int)numFrames; ++i)
 			{
 				sprintf_s(imgNameBuf,"%s%s%d%s",
@@ -155,9 +165,9 @@ namespace video
 				cvWaitKey(10);
 				cvReleaseImage(&m_pCurImg);
 			}
-			cvDestroyWindow(pWinName);
+			
 		}
-
+		cvDestroyWindow(pWinName);
 		return true;
 	}
 };
